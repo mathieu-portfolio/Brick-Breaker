@@ -1,8 +1,8 @@
-# 🧱 Brick Breaker - C++ GLUT Game
+# Brick Breaker - C++ GLUT Game
 
 ![Brick Breaker Gameplay](docs/resources/game.png)
 
-## 🎮 Overview
+## Overview
 **Brick Breaker** is a minimalist C++ game using **GLUT**, featuring classic block-breaking mechanics with a simple graphical interface. This game is **already compiled** and requires no additional setup. Simply execute the provided binary.
 
 ![Brick Breaker Menu](docs/resources/menu.png)

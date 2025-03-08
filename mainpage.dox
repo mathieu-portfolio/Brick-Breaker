@@ -1,0 +1,20 @@
+/**
+ * @mainpage Brick Breaker - C++ GLUT Game
+ *
+ * @section intro_sec Introduction
+ * Welcome to the documentation for **Brick Breaker**, a minimalist C++ game built using **GLUT**.
+ * This project features classic **brick-breaking mechanics**, a simple graphical interface, and a scoring system.
+ * This was one of my first projects at school, so please bear with the chaotic structure of the code.
+ *
+ * @section features_sec Features
+ * - **Breakable Bricks** with different resistance levels
+ * - **Ball Mechanics** with bounces and movement
+ * - **Simple 2D Graphics** using OpenGL/GLUT
+ * - **Scoring System** to track player progress
+ * - **Bonuses** to add balls
+ * - **Keyboard Controls** for player interaction
+ *
+ * @section hierarchy_sec Class Hierarchy
+ * The project follows an **object-oriented structure** with different game elements.
+ * Click [here](hierarchy.html) to view the **class hierarchy**.
+ */

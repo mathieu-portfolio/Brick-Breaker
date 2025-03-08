@@ -1,4 +1,8 @@
- 
+/**
+ * @file Eleve.cpp
+ * @brief Implementation of game logic and rendering for the Brick Breaker game.
+ */
+
 #pragma warning( disable : 4996 ) 
  
 #include <cstdlib>
@@ -17,14 +21,38 @@ using namespace std;
 const double PI = 3.14159265358;
 
 //declarations
+/**
+ * @brief Computes the reflection vector after a collision.
+ * @param vitesse Incoming velocity vector.
+ * @param normal Normal vector of the collision surface.
+ * @return Reflected velocity vector.
+ */
 V2 rebond(V2 vitesse, V2 normal);
+/**
+ * @brief Handles collision detection with screen borders.
+ * @param newPos New position of the object.
+ * @param speed Speed vector of the object.
+ * @param rayon Radius of the object.
+ * @return Normal vector of the collision surface, or (0,0) if no collision.
+ */
 V2 collisionBords(V2 newPos, V2 speed, float rayon);
 
+/// @brief Displays the game menu.
 void menu();
+
+/// @brief Displays the options menu.
 void options();
+
+/// @brief Loads game assets and initializes the game.
 void chargement();
+
+/// @brief Starts the gameplay loop.
 void jeu();
+
+/// @brief Displays the game over screen.
 void gameOver();
+
+/// @brief Manages the best player leaderboard.
 void bestPlayer();
 
 bool afficher_cotes_actifs = false;
@@ -35,61 +63,63 @@ bool afficher_cotes_actifs = false;
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/// @brief Filename for the high score file.
 string filename = "score.txt";
 fstream file_out;
 const V2 init = V2(300, BALLRAD + 10);
 
+/**
+ * @struct GameData
+ * @brief Stores game state and variables.
+ */
 struct GameData
 {
-	int difficulty = 0;
-	int score;
-	int bestScore;
-	string bestPlayer;
-	int turn;
+	int difficulty = 0; ///< Difficulty level (0-5).
+	int score;          ///< Current player score.
+	int bestScore;      ///< Best recorded score.
+	string bestPlayer;  ///< Name of the best player.
+	int turn;           ///< Current game turn.
 
-	int heighBrick = HAUTEUR_BRIQUE;
-	int widthBrick = LARGEUR_BRIQUE;
+	int heighBrick = HAUTEUR_BRIQUE; ///< Height of a brick.
+	int widthBrick = LARGEUR_BRIQUE; ///< Width of a brick.
 
-	int idFrame = 0;
-	int heighPix = HAUTEUR_ECRAN;
-	int widthPix = LARGEUR_ECRAN;
-	Rect bordsHB = Rect(V2(), V2(widthPix, heighPix - heighBrick));
+	int idFrame = 0;    ///< Frame counter.
+	int heighPix = HAUTEUR_ECRAN; ///< Screen height in pixels.
+	int widthPix = LARGEUR_ECRAN; ///< Screen width in pixels.
+	Rect bordsHB = Rect(V2(), V2(widthPix, heighPix - heighBrick)); ///< Game area boundaries.
 
-	int ballRad = BALLRAD;
-	V2 ballInit = init;
-	V2 nextInit = init;
-	V2 initSpeed;
-	V2 fleche;
-	double angle;
-	float power;
-	bool launch;
-	float speed;
-	int combo;
+	int ballRad = BALLRAD; ///< Ball radius.
+	V2 ballInit = init; ///< Initial position of the ball.
+	V2 nextInit = init; ///< Next launch position.
+	V2 initSpeed; ///< Initial speed of the ball.
+	V2 fleche; ///< Direction arrow.
+	double angle; ///< Launch angle.
+	float power; ///< Launch power.
+	bool launch; ///< Whether the ball is launched.
+	float speed; ///< Ball speed.
+	int combo; ///< Combo multiplier.
 
-	Billes billes;
+	Billes billes; ///< List of active balls.
+	vector<Brique> briques; ///< List of active bricks.
+	vector<Bonus> bonus; ///< List of active bonuses.
+	vector<bool> ecrans = { true, false, false , false, false, false }; ///< UI screen visibility.
 
-	vector<Brique> briques;
-
-	vector<Bonus> bonus;
-
-	vector<bool> ecrans = { true, false, false , false, false, false };
-
-	Clavier clavier;
+	Clavier clavier; ///< Keyboard input manager.
 
 	vector<Color> brickLvl = { Color::Yellow, Color::Orange, Color::Red,
-							   Color::Cyan, Color::Blue, Color::Purple };
+															Color::Cyan, Color::Blue, Color::Purple }; ///< Colors for bricks.
 
 	Brique* getBrick(V2 _pos);
-
 	void addBrick();
-
 	void addBonus();
-
 	void initialiser();
 
+	/**
+	 * @brief Constructs a GameData object and initializes the game state.
+	 */
 	GameData() 
 	{
-		initialiser();
+			initialiser();
 	}
 };
 
@@ -149,9 +179,13 @@ void Brique::init_cotes()
 }
 */
 
-/*
-* La bille change de trajectoire a chaque collision avec le cote le plus proche
-*/
+/**
+ * @brief Handles collision detection and response for the ball.
+ * @param newPos New position of the ball.
+ * @param newSpd New speed vector after collision.
+ * @param dt Delta time.
+ * @param _distance Distance traveled before collision.
+ */
 void Bille::gestionCollisions(V2& newPos, V2& newSpd, double dt, float _distance)
 {
 	if (G.briques.empty()) {
@@ -224,6 +258,10 @@ void Bille::gestionCollisions(V2& newPos, V2& newSpd, double dt, float _distance
 }
 
 
+/**
+ * @brief Handles rebound logic for the ball.
+ * @param dt Delta time.
+ */
 void Bille::gestionRebond(double dt)
 {
 		V2 newPos = pos + speed * dt;
@@ -514,7 +552,13 @@ bool collisionBords(V2 pos, V2 newPos, float rayon, float distance,
 */
 
 
-//retourne un vecteur normal a un bord ou nul
+/**
+ * @brief Handles collision with screen borders.
+ * @param newPos New position.
+ * @param speed Speed vector.
+ * @param rayon Ball radius.
+ * @return Normal vector of the collision surface.
+ */
 V2 collisionBords(V2 newPos, V2 speed, float rayon)
 {
 	if ((newPos.x - rayon < 0) && (rebond(speed, V2(1, 0)).x > 0)) {

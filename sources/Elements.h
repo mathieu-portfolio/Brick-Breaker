@@ -23,15 +23,25 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * @class Element
+ * @brief Represents a base game element with a position and size.
+ */
 class Element
 {
 public:
+	V2 pos, size; ///< Position and size of the element.
+	int idTex; ///< Texture ID.
+	std::string texture; ///< Texture file name.
+
+	/**
+	 * @brief Constructs an Element.
+	 */
 	Element(V2 _pos = V2(), V2 _size = V2()) : pos(_pos), size(_size) {}
 
-	V2 pos, size;
-	int idTex;
-	string texture;
-
+	/**
+	 * @brief Moves the element downward.
+	 */
 	void descend();
 };
 
@@ -42,9 +52,18 @@ public:
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * @class Brique
+ * @brief Represents a brick in the game.
+ */
 class Brique : public Element
 {
 public:
+	bool intact; ///< Indicates if the brick is intact.
+	vector<bool> coteActif; ///< Active sides of the brick.
+	int resistance; ///< Brick resistance level.
+	int points; ///< Points awarded when destroyed.
+
 	Brique(V2 _pos = V2(), V2 _size = V2(LARGEUR_BRIQUE, HAUTEUR_BRIQUE), 
 		int res = 1, int _points = 1, bool _intact = true) :
 		Element(_pos, _size), resistance(res), points(_points), intact(_intact) 
@@ -53,20 +72,23 @@ public:
 		//init_cotes();
 	}
 
-	Brique(V2 _pos, int res) :
-		Brique(_pos, V2(LARGEUR_BRIQUE, HAUTEUR_BRIQUE), res, res, true) {}
-
-	bool intact;
-	vector<bool> coteActif;
-	int resistance;
-	int points;
-
+	/**
+	 * @brief Constructs a brick with default dimensions.
+	 */
+	Brique(V2 _pos, int res);
+	
+	/**
+	 * @brief Checks for brick intersection.
+	 */
 	bool interBrick(V2 _pos);
 
-	void init_cotes();
+	/**
+	 * @brief Handles brick collision.
+	 */
+	bool collisionBrique(V2 _pos, V2 newPos, int rayon, float distance,
+												V2* n = nullptr, V2* pos = nullptr);
 
-	bool collisionBrique(V2 _pos, V2 newPos, int rayon, float distance, 
-		V2* n = nullptr, V2* pos = nullptr);
+	void init_cotes();
 };
 
 
@@ -76,20 +98,28 @@ public:
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * @class Bille
+ * @brief Represents a ball in the game.
+ */
 class Bille
 {
 public :
+	V2 pos, speed; ///< Position and speed of the ball.
+	float rayon; ///< Ball radius.
+	double timer_envoi, timer_rebond; ///< Timers for launch and bounce.
+
+	/**
+	 * @brief Constructs a ball.
+	 */
 	Bille(V2 _pos = BALLINIT, V2 _speed = V2(), float _rayon = 10,
 		double envoi = 0, double rebond = 0) :
 		pos(_pos), rayon(_rayon), speed(_speed),
 		timer_envoi(envoi), timer_rebond(rebond) {}
 
-	V2 pos, speed;
-	float rayon;
-
-	double timer_envoi;
-	double timer_rebond;
-
+	/**
+	 * @brief Manages ball collisions.
+	 */
 	void gestionCollisions(V2& newPos, V2& newSpeed, double dt, float distance);
 	void gestionRebond(double dt);
 };
@@ -171,13 +201,22 @@ public :
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * @class Bonus
+ * @brief Represents a collectible bonus in the game.
+ */
 class Bonus : public Element
 {
 public :
-	Bonus(V2 _pos) :
-		Element(_pos, V2(LARGEUR_BONUS, HAUTEUR_BONUS)) {}
+	bool caught = false; ///< Indicates if the bonus has been collected.
 
+	/**
+	 * @brief Constructs a Bonus.
+	 */
+	Bonus(V2 _pos) : Element(_pos, V2(LARGEUR_BONUS, HAUTEUR_BONUS)) {}
+
+	/**
+	 * @brief Handles bonus collection.
+	 */
 	void bonusCaught(V2 _pos, int rayon);
-
-	bool caught = false;
 };

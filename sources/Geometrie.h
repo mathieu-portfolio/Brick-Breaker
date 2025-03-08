@@ -37,30 +37,38 @@ bool collisionSegment(Segment trajectoire, int rayon, float distance, vector<Seg
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+/**
+ * @struct Segment
+ * @brief Represents a geometric segment with two endpoints.
+ */
 struct Segment
 {
-	V2 A, B;
+    V2 A, B; ///< Endpoints of the segment.
 
-	Segment(V2 _A = V2(), V2 _B = V2()) :
-		A(_A), B(_B) {}
+    /**
+     * @brief Constructs a segment.
+     * @param _A First endpoint.
+     * @param _B Second endpoint.
+     */
+    Segment(V2 _A = V2(), V2 _B = V2()) : A(_A), B(_B) {}
 
-	V2 centre() { return (A + B) / 2; }
+    /**
+     * @brief Computes the center of the segment.
+     * @return Midpoint of the segment.
+     */
+    V2 centre() { return (A + B) / 2; }
 
-	V2 orthogonal(float distance = 1) 
-	{ 
-		V2 ortho = (B - A).orthogonal();
-		return distance * ortho; 
-	}
+    /**
+     * @brief Computes an orthogonal vector.
+     * @param distance Scaling factor.
+     * @return A perpendicular vector.
+     */
+    V2 orthogonal(float distance = 1)
+    {
+        V2 ortho = (B - A).orthogonal();
+        return distance * ortho;
+    }
 };
-
-bool operator == (const Segment& a, const Segment& b);
-bool operator != (const Segment& a, const Segment& b);
-
-Segment operator + (const Segment& a, const Segment& b);
-Segment operator - (const Segment& a, const Segment& b);
-Segment operator * (float          a, const Segment& b);
-Segment operator * (const Segment& a, float          b);
-Segment operator / (const Segment& a, float          b);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,6 +78,10 @@ Segment operator / (const Segment& a, float          b);
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+/**
+ * @struct Rect
+ * @brief Represents a rectangle defined by two corner points.
+ */
 struct Rect
 {
 	float xmin, xmax, ymin, ymax;
@@ -84,10 +96,16 @@ struct Rect
 	Segment DA = Segment(D, A);
 	vector<Segment> cotes = { AB, BC, CD, DA };
 
+	/**
+	 * @brief Constructs a rectangle from coordinates.
+	 */
 	Rect(float _xmin, float _ymin, float _xmax, float _ymax) : xmin(_xmin), xmax(_xmax), ymin(_ymin), ymax(_ymax) {}
 	Rect(V2 _A, V2 _C) : Rect(_A.x, _A.y, _C.x, _C.y) {}
 	Rect(V2 O, float c) : Rect(O, O + V2(c, c)) {}
 
+	/**
+	 * @brief Checks if a point is inside the rectangle.
+	 */
 	bool interRect(V2 point)
 	{
 		if (point.x < xmin) return false;
@@ -98,6 +116,9 @@ struct Rect
 		return true;
 	}
 
+	/**
+	 * @brief Checks if another rectangle intersects with this one.
+	 */
 	bool interRectRect(Rect rect)
 	{
 		if (rect.ymax < ymin) return false;

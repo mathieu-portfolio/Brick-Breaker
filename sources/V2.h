@@ -5,35 +5,53 @@
 
 using namespace std;
 
+/**
+ * @class V2
+ * @brief Represents a 2D vector with basic vector operations.
+ */
 class V2
 {
-public :
-	float x, y;
+public:
+	float x, y; ///< X and Y coordinates of the vector.
 
-	V2(float _x = 0, float _y = 0) : 
-		x(_x), y(_y) {}
+	/**
+	 * @brief Constructs a V2 vector.
+	 * @param _x X-coordinate (default: 0).
+	 * @param _y Y-coordinate (default: 0).
+	 */
+	V2(float _x = 0, float _y = 0) : x(_x), y(_y) {}
 
-	V2(double angle) :
-		x(cos(angle)), y(sin(angle)) {}
+	/**
+	 * @brief Constructs a unit vector from an angle.
+	 * @param angle Angle in radians.
+	 */
+	V2(double angle) : x(cos(angle)), y(sin(angle)) {}
 
+	/**
+	 * @brief Computes the norm (magnitude) of the vector.
+	 * @return The vector's norm.
+	 */
 	float norm() { return sqrt(x * x + y * y); }
 
-	V2  normalize() 
-	{ 
-		float norme = norm();  
-
-		if (norme == 0) {
-			return V2();
-		}
-
-		x /= norme;    
-		y /= norme; 
-
+	/**
+	 * @brief Normalizes the vector.
+	 * @return The normalized vector.
+	 */
+	V2 normalize()
+	{
+		float norme = norm();
+		if (norme == 0) return V2();
+		x /= norme;
+		y /= norme;
 		return *this;
 	}
 
-	V2 orthogonal() 
-	{ 
+	/**
+	 * @brief Computes an orthogonal vector.
+	 * @return An orthogonal unit vector.
+	 */
+	V2 orthogonal()
+	{
 		V2 ortho = V2(-y, x);
 		ortho.normalize();
 		return ortho;
@@ -68,11 +86,8 @@ V2 operator /= (V2& a, float	 b);
 
 V2 operator - (const V2& a);
 
-// produit scalaire
-float operator * (const V2& a, const V2& b);
-
-//produit vectoriel
-float operator ^ (const V2& a, const V2& b);
+float operator * (const V2& a, const V2& b); ///< Dot product
+float operator ^ (const V2& a, const V2& b); ///< Cross product
 
 
 ostream& operator << (ostream& os, V2& t);
